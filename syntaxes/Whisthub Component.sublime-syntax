@@ -42,9 +42,9 @@ contexts:
     - include: tag-end
 
   i18n-common:
+    - include: i18n-lang-attribute
     - include: tag-attributes
     - include: tag-end-self-closing
-    - include: i18n-lang-attribute
 
   i18n-tsv:
     # for compatibility with ST builds before 4114
