@@ -1,0 +1,16 @@
+{
+	"extensions":
+	[
+		"tsv",
+	],
+	"tab_size": 16,
+	"translate_tabs_to_spaces": false,
+	"word_wrap": false,
+	"ident_subsequent_lines": false,
+	"auto_indent": false,
+	"tab_completion": false,
+	"auto_complete": false,
+	"auto_complete_commit_on_tab": false,
+	"auto_complete_use_index": false,
+	"auto_complete_use_history": false,
+}

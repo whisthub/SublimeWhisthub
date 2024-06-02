@@ -1,0 +1,158 @@
+%YAML 1.2
+---
+extends: Packages/Vue Syntax Highlight/Vue Component.sublime-syntax
+# extends: Packages/HTML/HTML.sublime-syntax
+name: Vue Component (whisthub)
+version: 2
+file_extensions:
+  - vue
+scope: text.html.vue.whisthub
+
+variables:
+  i18n_content_begin: '{{script_content_begin}}'
+  i18n_content_end: |-
+    (?x:
+    # optional html comment end punctuation followed by </i18n> tag
+      (?: (\s*) (-->) \s* )? (?=</(?i:i18n){{tag_name_break_char}})
+    # or standalone html comment end punctuation in a line
+    |   ^ (\s*) (-->) \s* $
+    )
+
+contexts:
+
+  main:
+    - meta_prepend: true
+    - include: i18n-tag
+
+  i18n-tag:
+    # for compatibility with ST builds before 4114
+    - match: (<)((?i:i18n)){{tag_name_break}}
+      captures:
+        1: punctuation.definition.tag.begin.html
+        2: entity.name.tag.style.html
+      push: i18n-css
+    - match: (</)((?i:i18n){{tag_name_break}})
+      captures:
+        1: punctuation.definition.tag.begin.html
+        2: entity.name.tag.style.html
+      push: i18n-close-tag-content
+
+  i18n-close-tag-content:
+    - meta_scope: meta.tag.style.end.html
+    - include: tag-end
+
+  i18n-common:
+    - meta_prepend: true
+    - include: i18n-lang-attribute
+
+  i18n-css:
+    # for compatibility with ST builds before 4114
+    - meta_scope: meta.tag.style.begin.html
+    - match: '>'
+      scope: punctuation.definition.tag.end.html
+      set: i18n-css-content
+    - include: i18n-common
+
+  i18n-css-content:
+    # for compatibility with ST builds before 4114
+    - meta_include_prototype: false
+    - match: '{{i18n_content_begin}}'
+      captures:
+        1: comment.block.html punctuation.definition.comment.begin.html
+      pop: 1  # make sure to match only once
+      embed: scope:source.css
+      embed_scope: source.css.embedded.html
+      escape: '{{i18n_content_end}}'
+      escape_captures:
+        1: source.css.embedded.html
+        2: comment.block.html punctuation.definition.comment.end.html
+        3: source.css.embedded.html
+        4: comment.block.html punctuation.definition.comment.end.html
+
+  i18n-lang-attribute:
+    - match: (?i:lang){{attribute_name_break}}
+      scope: meta.attribute-with-value.html entity.other.attribute-name.html
+      set: i18n-lang-attribute-assignment
+
+  i18n-lang-attribute-assignment:
+    - meta_content_scope: meta.tag.style.begin.html meta.attribute-with-value.html
+    - match: =
+      scope: punctuation.separator.key-value.html
+      set: i18n-lang-attribute-value
+    - match: (?=\S)
+      set: i18n-css
+
+  i18n-lang-attribute-value:
+    - meta_include_prototype: false
+    - meta_scope: meta.tag.style.begin.html meta.attribute-with-value.html
+    - include: i18n-lang-decider
+
+  i18n-lang-decider:
+    - match: (?i)(?=tsv{{unquoted_attribute_break}}|\'tsv\'|"tsv")
+      set:
+        -   - meta_scope: meta.tag.style.begin.html
+            - match: '>'
+              scope: punctuation.definition.tag.end.html
+              set:
+                - match: '{{i18n_content_begin}}'
+                  embed_scope: source.tsv.embedded.html
+                  escape_captures:
+                    1: source.tsv.embedded.html
+                    2: comment.block.html punctuation.definition.comment.end.html
+                    3: source.tsv.embedded.html
+                    4: comment.block.html punctuation.definition.comment.end.html
+                  captures:
+                    1: comment.block.html punctuation.definition.comment.begin.html
+                  pop: 1
+                  embed: scope:source.tsv
+                  escape: '{{i18n_content_end}}'
+            - include: i18n-common
+        - tag-generic-attribute-meta
+        - tag-generic-attribute-value
+    - match: (?i)(?=yaml{{unquoted_attribute_break}}|\'yaml\'|"yaml")
+      set:
+        -   - meta_scope: meta.tag.style.begin.html
+            - match: '>'
+              scope: punctuation.definition.tag.end.html
+              set:
+                - match: '{{i18n_content_begin}}'
+                  embed_scope: source.yaml.embedded.html
+                  escape_captures:
+                    1: source.yaml.embedded.html
+                    2: comment.block.html punctuation.definition.comment.end.html
+                    3: source.yaml.embedded.html
+                    4: comment.block.html punctuation.definition.comment.end.html
+                  captures:
+                    1: comment.block.html punctuation.definition.comment.begin.html
+                  pop: 1
+                  embed: scope:source.yaml
+                  escape: '{{i18n_content_end}}'
+            - include: i18n-common
+        - tag-generic-attribute-meta
+        - tag-generic-attribute-value
+    - match: (?i)(?=json{{unquoted_attribute_break}}|\'json\'|"json")
+      set:
+        -   - meta_scope: meta.tag.style.begin.html
+            - match: '>'
+              scope: punctuation.definition.tag.end.html
+              set:
+                - match: '{{i18n_content_begin}}'
+                  embed_scope: source.json.embedded.html
+                  escape_captures:
+                    1: source.json.embedded.html
+                    2: comment.block.html punctuation.definition.comment.end.html
+                    3: source.json.embedded.html
+                    4: comment.block.html punctuation.definition.comment.end.html
+                  captures:
+                    1: comment.block.html punctuation.definition.comment.begin.html
+                  pop: 1
+                  embed: scope:source.json
+                  escape: '{{i18n_content_end}}'
+            - include: i18n-common
+        - tag-generic-attribute-meta
+        - tag-generic-attribute-value
+    - match: (?=\S)
+      set:
+        - i18n-css
+        - tag-generic-attribute-meta
+        - tag-generic-attribute-value

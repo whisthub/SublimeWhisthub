@@ -1,0 +1,51 @@
+%YAML 1.2
+---
+name: Translation
+scope: source.tsv
+file_extensions:
+  - tsv
+
+contexts:
+
+  main:
+    - include: header
+
+  header:
+    - match: \w+
+      scope: keyword.constant
+    - match: '$'
+      push: body
+
+  body:
+    - match: '//.*'
+      scope: comment.line.double-slash
+    - match: '#.*'
+      scope: comment.line.double-slash
+    - include: body_line_key
+
+  body_line_key:
+    - match: '[\w _]+'
+      scope: keyword.constant
+    - match: \t
+      push: message
+
+  message:
+    - meta_content_scope: string.unquoted
+    - match: $
+      pop: true
+    - match: '{'
+      scope: variable.function.tsv
+      push: interpolation
+
+  interpolation:
+    - meta_content_scope: variable.parameter.tsv
+    - match: "'"
+      push: literal
+    - match: '}'
+      scope: variable.function.mustache
+      pop: true
+
+  literal:
+    - meta_content_scope: string.unquoted
+    - match: "'"
+      pop: true
