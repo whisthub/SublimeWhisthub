@@ -110,7 +110,7 @@ contexts:
             - include: i18n-common
         - tag-generic-attribute-meta
         - tag-generic-attribute-value
-    - match: (?i)(?=yaml{{unquoted_attribute_break}}|\'yaml\'|"yaml")
+    - match: (?i)(?=ya?ml{{unquoted_attribute_break}}|\'ya?ml\'|"ya?ml")
       set:
         -   - meta_scope: meta.tag.style.begin.html
             - match: '>'
