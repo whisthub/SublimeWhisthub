@@ -61,13 +61,13 @@ contexts:
       captures:
         1: comment.block.html punctuation.definition.comment.begin.html
       pop: 1  # make sure to match only once
-      embed: scope:source.css
-      embed_scope: source.css.embedded.html
+      embed: scope:source.json
+      embed_scope: source.json.embedded.html
       escape: '{{i18n_content_end}}'
       escape_captures:
-        1: source.css.embedded.html
+        1: source.json.embedded.html
         2: comment.block.html punctuation.definition.comment.end.html
-        3: source.css.embedded.html
+        3: source.json.embedded.html
         4: comment.block.html punctuation.definition.comment.end.html
 
   i18n-lang-attribute:
