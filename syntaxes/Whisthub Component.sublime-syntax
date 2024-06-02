@@ -30,7 +30,7 @@ contexts:
       captures:
         1: punctuation.definition.tag.begin.html
         2: entity.name.tag.style.html
-      push: i18n-css
+      push: i18n-tsv
     - match: (</)((?i:i18n){{tag_name_break}})
       captures:
         1: punctuation.definition.tag.begin.html
@@ -42,18 +42,19 @@ contexts:
     - include: tag-end
 
   i18n-common:
-    - meta_prepend: true
+    - include: tag-attributes
+    - include: tag-end-self-closing
     - include: i18n-lang-attribute
 
-  i18n-css:
+  i18n-tsv:
     # for compatibility with ST builds before 4114
     - meta_scope: meta.tag.style.begin.html
     - match: '>'
       scope: punctuation.definition.tag.end.html
-      set: i18n-css-content
+      set: i18n-tsv-content
     - include: i18n-common
 
-  i18n-css-content:
+  i18n-tsv-content:
     # for compatibility with ST builds before 4114
     - meta_include_prototype: false
     - match: '{{i18n_content_begin}}'
@@ -80,7 +81,7 @@ contexts:
       scope: punctuation.separator.key-value.html
       set: i18n-lang-attribute-value
     - match: (?=\S)
-      set: i18n-css
+      set: i18n-tsv
 
   i18n-lang-attribute-value:
     - meta_include_prototype: false
@@ -153,6 +154,6 @@ contexts:
         - tag-generic-attribute-value
     - match: (?=\S)
       set:
-        - i18n-css
+        - i18n-tsv
         - tag-generic-attribute-meta
         - tag-generic-attribute-value
